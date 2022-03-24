@@ -8,10 +8,19 @@
               <span class="text-h5 font-weight-regular white--text">Login</span>
             </v-card-title>
             <v-card-text class="pb-0">
-              <v-text-field outlined dense v-model="form.email" type="email" placeholder="Email" dark></v-text-field>
+              <v-text-field outlined dense v-model="form.email" type="email" placeholder="Email" dark />
             </v-card-text>
             <v-card-text class="pt-0">
-              <v-text-field outlined dense v-model="form.password" type="password" placeholder="Senha" dark></v-text-field>
+              <v-text-field
+                :type="show1 ? 'text' : 'password'"
+                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="show1 = !show1"
+                outlined
+                dense
+                v-model="form.password"
+                placeholder="Senha"
+                dark
+              />
             </v-card-text>
             <v-col class="pt-0">
               <v-btn block text class="white--text" @click="singIn()">Entrar</v-btn>
@@ -35,13 +44,14 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'LoginView',
 
   data () {
     return {
+      show1: false,
       snackbar: false,
       text: '',
       timeout: 2000,
@@ -57,6 +67,10 @@ export default {
     dadosRegistration: Object
   },
 
+  computed: {
+    ...mapGetters('userAuth', ['getUsers'])
+  },
+
   methods: {
     ...mapActions('userAuth', ['actionUserAuth']),
 
@@ -66,14 +80,17 @@ export default {
       }
     },
 
-    singIn () {
-      if (this.form.email === 'marcos@teste.com' && this.form.password === '123') {
-        this.actionUserAuth({
-          dados: this.form
-        })
-      } else {
-        this.notify('Senha Incorreta!', 'red')
-      }
+    async singIn () {
+      this.getUsers.forEach(element => {
+        if (element.email === this.form.email && element.password === this.form.password) {
+          this.actionUserAuth({
+            dados: element
+          })
+          this.$router.replace({ name: 'dashboard' })
+        } else {
+          this.notify('Senha Incorreta!', 'red')
+        }
+      })
     },
 
     notify (message, color) {

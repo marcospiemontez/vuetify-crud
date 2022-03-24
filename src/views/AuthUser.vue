@@ -39,7 +39,7 @@ export default {
         this.openLogin = true
         this.openRegistration = false
       } else if (event.button === 'registration') {
-        this.returnData.email = event
+        this.returnData.email = event.email
         this.openLogin = true
         this.openRegistration = false
       }

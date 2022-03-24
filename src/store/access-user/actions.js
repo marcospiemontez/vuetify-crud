@@ -2,7 +2,7 @@
 
 export function actionUserAuth (/* context */ { commit }, { dados }) {
   return new Promise((resolve, reject) => {
-    console.log(dados)
+    delete (dados.password)
     commit('SET_MUTATION_USER', dados)
   })
 }
@@ -10,6 +10,12 @@ export function actionUserAuth (/* context */ { commit }, { dados }) {
 export function actionRegistrationUser (/* context */ { commit }, { dados }) {
   return new Promise((resolve, reject) => {
     console.log(dados)
-    commit('SET_MUTATION_REGISTER_USER', dados)
+    commit('SET_MUTATION_REGISTER_USERS', dados)
+  })
+}
+
+export function actionGetUser (/* context */ { commit }, { dados }) {
+  return new Promise((resolve, reject) => {
+    commit('SET_MUTATION_REGISTER_USERS', dados)
   })
 }
