@@ -1,34 +1,89 @@
+
 <template>
-  <v-app id="inspire">
+  <v-app>
     <v-navigation-drawer
-      v-model="drawer"
-      app
-    >
-      <!--  -->
+      class="deep-purple accent-4"
+      dark
+      v-model="drawer" app>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="text-h6">
+            Modelo de Treino
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            Vamos la!
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider></v-divider>
+
+      <v-list
+        dense
+        nav
+      >
+        <v-list-item
+          v-for="item in items"
+          :key="item.title"
+          :to="item.to"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <template>
+        <div class="pa-2 mt-5">
+          <v-btn block>
+            Logout
+          </v-btn>
+        </div>
+      </template>
     </v-navigation-drawer>
 
-    <v-app-bar app>
+    <v-app-bar app dark class="deep-purple accent-4">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Cliente {{  }}</v-toolbar-title>
+      <v-toolbar-title >Application</v-toolbar-title>
     </v-app-bar>
 
-    <v-main>
-      <!--  -->
-    </v-main>
+    <v-cointainer>
+      <router-view />
+    </v-cointainer>
   </v-app>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
-      drawer: null
+      drawer: null,
+      items: [
+        { title: 'Perfil', icon: 'mdi-view-dashboard', to: '/profile' },
+        { title: 'Produtos', icon: 'mdi-image', to: '/products' }
+      ]
     }
   },
 
   mounted () {
-    console.log('agora vai!')
+    console.log('agora vai!', this.getUser)
+  },
+
+  computed: {
+    ...mapGetters('userAuth', ['getUser'])
+  },
+
+  methods: {
+    teste () {
+      console.log('aqqeeeeeee')
+    }
   }
 }
 </script>

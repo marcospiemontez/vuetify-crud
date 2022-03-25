@@ -5,8 +5,11 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import VMask from 'v-mask'
+import _ from 'lodash'
 
 Vue.use(VMask)
+
+Vue.prototype.$lodash = _
 
 Vue.config.productionTip = false
 
