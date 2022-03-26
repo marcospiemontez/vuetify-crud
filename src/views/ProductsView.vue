@@ -167,7 +167,7 @@
               text
               small
               color="red"
-              @click="deleteItem(item)"
+              @click="openModalDeleteItem(item)"
             >
               <v-icon>
                 mdi-delete
@@ -205,6 +205,7 @@ export default ({
       dialogDelete: false,
       dialogEditProduct: false,
       controlAddAndEditModal: '',
+      propsProducts: '',
       registrationProduct: {
         nameProduct: '',
         purchaseDate: '',
@@ -244,12 +245,21 @@ export default ({
         if (this.registrationProduct.purchaseDate !== '') {
           if (this.registrationProduct.dueDate !== '') {
             if (this.registrationProduct.inventory !== '') {
-              this.actionAddProducts({
-                data: this.registrationProduct
-              })
-              this.clearInputs()
-              this.closeModalAddProducts()
-              this.notify('Produto cadastrado com sucesso!', 'green')
+              if (this.controlAddAndEditModal === 'editProduct') {
+                this.actionPutProducts({
+                  data: this.dataProducts
+                })
+                this.clearInputs()
+                this.closeModalAddProducts()
+                this.notify('Produto editado com sucesso!', 'green')
+              } else {
+                this.actionAddProducts({
+                  data: this.registrationProduct
+                })
+                this.clearInputs()
+                this.closeModalAddProducts()
+                this.notify('Produto cadastrado com sucesso!', 'green')
+              }
             } else {
               this.notify('Preencha a quantidade', 'red')
             }
@@ -264,12 +274,21 @@ export default ({
       }
     },
 
-    closeModalDeleteProduct () {
+    openModalDeleteItem (item) {
+      this.propsProducts = item
+      this.dialogDelete = true
+    },
 
+    closeModalDeleteProduct () {
+      this.dialogDelete = false
     },
 
     deleteProductConfirm () {
-
+      if (this.propsProducts !== '') {
+        console.log(this.propsProducts, 'as props')
+        this.getProducts.splice(this.propsProducts, 1)
+      }
+      this.closeModalDeleteProduct()
     },
 
     openModalEditProduct (item) {
@@ -279,7 +298,6 @@ export default ({
       setTimeout(() => {
         this.modalAddProducts = true
       }, 250)
-      console.log('mutation', this.SET_MUTATION_ADD_PRODUCT)
     },
 
     closeModalEditProduct () {

@@ -7,6 +7,12 @@ export function actionAddProducts (/* context */ { commit }, { data }) {
   })
 }
 
+export function actionPutProducts ({ commit }, { data }) {
+  return new Promise((resolve, reject) => {
+    commit('SET_MUTATION_ADD_PRODUCT', data)
+  })
+}
+
 // export function actionGetProducts (/* context */ { commit }, { data }) {
 //   return new Promise((resolve, reject) => {
 //     console.log(data)
