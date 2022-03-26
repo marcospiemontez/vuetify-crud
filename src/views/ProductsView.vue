@@ -23,11 +23,12 @@
                 v-model="modalAddProducts"
                 max-width="500px"
               >
-                <template v-slot:activator= {on}>
+                <template v-slot:activator= {on,attrs}>
                   <v-btn
                     color="deep-purple accent-4"
                     dark
                     class="mb-2"
+                    v-bind="attrs"
                     v-on="on"
                     @click="openModalAddProducts()"
                   >
@@ -36,7 +37,8 @@
                 </template>
                 <v-card>
                   <v-card-title class="text-center">
-                    <span class="text-h5 font-weight-bold"> Novo Produto </span>
+                    <span v-if="controlAddAndEditModal === 'editProduct'" class="text-h5 font-weight-bold"> Editar Produto </span>
+                    <span v-else class="text-h5 font-weight-bold"> Novo Produto </span>
                   </v-card-title>
 
                   <v-card-text>
@@ -46,6 +48,14 @@
                           cols="12" xl="6" lg="6" md="6" sm="11" xs="11"
                         >
                           <v-text-field
+                            v-if="controlAddAndEditModal === 'editProduct'"
+                            outlined
+                            dense
+                            v-model="dataProducts.nameProduct"
+                            label="Nome do Produto"
+                          />
+                          <v-text-field
+                            v-else
                             outlined
                             dense
                             v-model="registrationProduct.nameProduct"
@@ -54,6 +64,15 @@
                         </v-col>
                         <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                           <v-text-field
+                            v-if="controlAddAndEditModal === 'editProduct'"
+                            outlined
+                            dense
+                            v-model="dataProducts.purchaseDate"
+                            label="Data da Compra"
+                            v-mask="'##/##/####'"
+                          />
+                          <v-text-field
+                            v-else
                             outlined
                             dense
                             v-model="registrationProduct.purchaseDate"
@@ -63,6 +82,15 @@
                         </v-col>
                         <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                           <v-text-field
+                            v-if="controlAddAndEditModal === 'editProduct'"
+                            outlined
+                            dense
+                            v-model="dataProducts.dueDate"
+                            label="Data do Vencimento"
+                            v-mask="'##/##/####'"
+                          />
+                          <v-text-field
+                            v-else
                             outlined
                             dense
                             v-model="registrationProduct.dueDate"
@@ -72,6 +100,15 @@
                         </v-col>
                         <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                           <v-text-field
+                            v-if="controlAddAndEditModal === 'editProduct'"
+                            outlined
+                            dense
+                            type="number"
+                            v-model="dataProducts.inventory"
+                            label="Quantidade comprada"
+                          />
+                          <v-text-field
+                            v-else
                             outlined
                             dense
                             type="number"
@@ -120,7 +157,7 @@
               text
               small
               color="black"
-              @click="editItem(item)"
+              @click="openModalEditProduct(item)"
             >
               <v-icon>
                 mdi-pencil
@@ -140,34 +177,51 @@
         </v-data-table>
       </v-col>
     </v-row>
+
+    <v-snackbar
+      :color="color"
+      content-class="text-center text-weight "
+      v-model="snackbar"
+      :timeout="timeout"
+    >
+      {{ text }}
+    </v-snackbar>
   </v-container>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default ({
   name: 'ProductsView',
 
-  data: () => ({
-    modalAddProducts: false,
-    dialogDelete: false,
-    dialogEditProduct: false,
-    registrationProduct: {
-      nameProduct: '',
-      purchaseDate: '',
-      dueDate: '',
-      inventory: ''
-    },
+  data () {
+    return {
+      text: '',
+      color: '',
+      timeout: 2500,
+      snackbar: false,
+      modalAddProducts: false,
+      dialogDelete: false,
+      dialogEditProduct: false,
+      controlAddAndEditModal: '',
+      registrationProduct: {
+        nameProduct: '',
+        purchaseDate: '',
+        dueDate: '',
+        inventory: ''
+      },
+      dataProducts: {},
+      headers: [
+        { text: 'Produto', align: 'start', sortable: false, value: 'nameProduct' },
+        { text: 'Data Compra', align: 'center', value: 'purchaseDate' },
+        { text: 'Data Vencimento', align: 'center', value: 'dueDate' },
+        { text: 'Estoque', align: 'center', value: 'inventory' },
+        { text: 'Ações', value: 'actions', align: 'center', sortable: false }
+      ]
 
-    headers: [
-      { text: 'Produto', align: 'start', sortable: false, value: 'nameProduct' },
-      { text: 'Data Compra', align: 'center', value: 'purchaseDate' },
-      { text: 'Data Vencimento', align: 'center', value: 'dueDate' },
-      { text: 'Estoque', align: 'center', value: 'inventory' },
-      { text: 'Ações', value: 'actions', align: 'center', sortable: false }
-    ]
-  }),
+    }
+  },
 
   computed: {
     ...mapGetters('products', ['getProducts'])
@@ -175,6 +229,7 @@ export default ({
 
   methods: {
     ...mapActions('products', ['actionAddProducts']),
+    ...mapMutations('products', ['SET_MUTATION_ADD_PRODUCT']),
 
     openModalAddProducts () {
       this.modalAddProducts = true
@@ -184,16 +239,17 @@ export default ({
       this.modalAddProducts = false
     },
 
-    async addProduct () {
+    addProduct () {
       if (this.registrationProduct.nameProduct !== '') {
         if (this.registrationProduct.purchaseDate !== '') {
           if (this.registrationProduct.dueDate !== '') {
             if (this.registrationProduct.inventory !== '') {
-              await this.actionAddProducts({
+              this.actionAddProducts({
                 data: this.registrationProduct
               })
               this.clearInputs()
               this.closeModalAddProducts()
+              this.notify('Produto cadastrado com sucesso!', 'green')
             } else {
               this.notify('Preencha a quantidade', 'red')
             }
@@ -216,6 +272,21 @@ export default ({
 
     },
 
+    openModalEditProduct (item) {
+      this.controlAddAndEditModal = 'editProduct'
+      this.dataProducts = item
+      this.SET_MUTATION_ADD_PRODUCT(this.dataProducts)
+      setTimeout(() => {
+        this.modalAddProducts = true
+      }, 250)
+      console.log('mutation', this.SET_MUTATION_ADD_PRODUCT)
+    },
+
+    closeModalEditProduct () {
+      this.controlAddAndEditModal = ''
+      this.modalAddProducts = false
+    },
+
     notify (message, color) {
       this.text = message
       this.color = color
@@ -223,7 +294,12 @@ export default ({
     },
 
     clearInputs () {
-      this.registrationProduct = {}
+      this.registrationProduct = {
+        nameProduct: '',
+        purchaseDate: '',
+        dueDate: '',
+        inventory: ''
+      }
     }
   }
 })
