@@ -136,11 +136,11 @@ export default ({
     validarCPF (cpf) {
       let add
       let rev
-      cpf = cpf.replace(/\.|-/g, '')
+      cpf = cpf?.replace(/\.|-/g, '')
       if (cpf === '') return 'CPF inválido!'
       // Elimina CPFs invalidos conhecidos
       if (
-        cpf.length !== 11 ||
+        cpf?.length !== 11 ||
         cpf === '00000000000' ||
         cpf === '11111111111' ||
         cpf === '22222222222' ||

@@ -52,9 +52,9 @@
       <v-toolbar-title >Application</v-toolbar-title>
     </v-app-bar>
 
-    <v-cointainer>
+    <v-main class="px-0">
       <router-view />
-    </v-cointainer>
+    </v-main>
   </v-app>
 </template>
 
