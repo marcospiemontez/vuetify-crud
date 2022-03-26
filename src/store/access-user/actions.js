@@ -13,10 +13,11 @@ export function actionRegistrationUser (/* context */ { commit }, { dados }) {
   })
 }
 
-export function actionPutDataUser (/* context */ { commit }, { dados, cpf }) {
+export function actionPutDataUser (/* context */ { commit }, { dados }) {
   return new Promise((resolve, reject) => {
-    console.log(dados)
-    commit('SET_MUTATION_USER', dados, cpf)
+    console.log('dados', dados)
+    commit('SET_MUTATION_EDIT_USER', dados)
+    commit('SET_MUTATION_USER', dados)
   })
 }
 

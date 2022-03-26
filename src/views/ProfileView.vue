@@ -28,7 +28,7 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
-                <v-text-field :readonly="permissionEdit" outlined dense v-model="formProfile.age" placeholder="Idade" ref="age" dark></v-text-field>
+                <v-text-field :readonly="permissionEdit" outlined dense v-model="formProfile.age" type="number" placeholder="Idade" ref="age" dark></v-text-field>
               </v-col>
               <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                 <v-text-field :readonly="permissionEdit" outlined dense v-model="formProfile.birthdate" v-mask="'##/##/####'" placeholder="Data Nascimento" ref="birthdate" dark></v-text-field>
@@ -118,7 +118,7 @@ export default ({
   },
 
   computed: {
-    ...mapGetters('userAuth', ['getUser'])
+    ...mapGetters('userAuth', ['getUser', 'getUsers'])
   },
 
   methods: {
@@ -169,7 +169,7 @@ export default ({
       return true
     },
 
-    updateDataUsers () {
+    async updateDataUsers () {
       if (this.formProfile.name !== '' && this.formProfile.lastName !== '') {
         if (this.formProfile.cpf !== '') {
           if (this.formProfile.age !== '') {
@@ -177,12 +177,9 @@ export default ({
               if (this.formProfile.email !== '') {
                 if (this.formProfile.password !== '') {
                   if (this.formProfile.password === this.formProfile.checkPassword) {
-                    this.actionPutDataUser({
-                      dados: this.formProfile,
-                      cpf: this.formProfile.cpf
+                    await this.actionPutDataUser({
+                      dados: this.formProfile
                     })
-                    this.$emit('return-data-login', { button: 'registration', email: this.formProfile.email })
-                    this.clearInputs()
                     this.notify('Cadastro Concluido com Sucesso!', 'green')
                   } else {
                     this.notify('As senhas DEVEM ser iguais')
@@ -212,6 +209,10 @@ export default ({
         this.notify('Nome e Sobrenome são obrigatórios')
         this.$refs.name.focus()
       }
+    },
+
+    clearInputs () {
+      this.formProfile = {}
     },
 
     notify (message, color) {

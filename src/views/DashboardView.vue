@@ -72,18 +72,8 @@ export default {
     }
   },
 
-  mounted () {
-    console.log('agora vai!', this.getUser)
-  },
-
   computed: {
     ...mapGetters('userAuth', ['getUser'])
-  },
-
-  methods: {
-    teste () {
-      console.log('aqqeeeeeee')
-    }
   }
 }
 </script>
