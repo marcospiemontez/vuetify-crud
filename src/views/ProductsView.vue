@@ -132,20 +132,20 @@
                     <v-btn
                       class="white--text"
                       color="deep-purple accent-4"
-                      @click="addProduct()"
+                      @click="controlAddAndEditModal === 'editProduct' ? saveEditProduct() : addProduct()"
                     >
-                      Adicionar
+                      {{ controlAddAndEditModal === 'editProduct' ? 'Salvar' : 'Adicionar' }}
                     </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
               <v-dialog v-model="dialogDelete" max-width="500px">
                 <v-card>
-                  <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                  <v-card-title class="text-h5">Você tem certeza que deseja deletar este item?</v-card-title>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="closeModalDeleteProduct()">Cancel</v-btn>
-                    <v-btn color="blue darken-1" text @click="deleteProductConfirm()">OK</v-btn>
+                    <v-btn color="blue darken-1" text @click="deleteProductConfirm()">Sim</v-btn>
                     <v-spacer></v-spacer>
                   </v-card-actions>
                 </v-card>
@@ -190,7 +190,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default ({
   name: 'ProductsView',
@@ -213,6 +213,7 @@ export default ({
         inventory: ''
       },
       dataProducts: {},
+      indexEditProduct: '',
       headers: [
         { text: 'Produto', align: 'start', sortable: false, value: 'nameProduct' },
         { text: 'Data Compra', align: 'center', value: 'purchaseDate' },
@@ -229,10 +230,10 @@ export default ({
   },
 
   methods: {
-    ...mapActions('products', ['actionAddProducts']),
-    ...mapMutations('products', ['SET_MUTATION_ADD_PRODUCT']),
+    ...mapActions('products', ['actionAddProducts', 'actionDeleteProducts', 'actionPutProducts']),
 
     openModalAddProducts () {
+      this.controlAddAndEditModal = 'addProduct'
       this.modalAddProducts = true
     },
 
@@ -283,21 +284,44 @@ export default ({
       this.dialogDelete = false
     },
 
-    deleteProductConfirm () {
+    async deleteProductConfirm () {
       if (this.propsProducts !== '') {
-        console.log(this.propsProducts, 'as props')
-        this.getProducts.splice(this.propsProducts, 1)
+        let indexProduct = ''
+        await this.getProducts.forEach((element, index) => {
+          if (this.propsProducts.nameProduct === element.nameProduct) {
+            indexProduct = index
+          }
+        })
+        this.actionDeleteProducts({
+          data: indexProduct
+        })
       }
+      this.notify('Produto deletado com sucesso!', 'green')
       this.closeModalDeleteProduct()
     },
 
-    openModalEditProduct (item) {
+    async openModalEditProduct (item) {
       this.controlAddAndEditModal = 'editProduct'
       this.dataProducts = item
-      this.SET_MUTATION_ADD_PRODUCT(this.dataProducts)
+      await this.getProducts.forEach(async (element, index) => {
+        if (this.dataProducts.nameProduct === element.nameProduct) {
+          this.indexEditProduct = await this.$lodash.cloneDeep(index)
+        }
+      })
       setTimeout(() => {
         this.modalAddProducts = true
       }, 250)
+    },
+
+    saveEditProduct () {
+      if (this.dataProducts !== '') {
+        this.actionPutProducts({
+          data: this.dataProducts,
+          index: this.indexEditProduct
+        })
+      }
+      this.notify('Produto Atualizado com Sucesso!', 'green')
+      this.closeModalEditProduct()
     },
 
     closeModalEditProduct () {
