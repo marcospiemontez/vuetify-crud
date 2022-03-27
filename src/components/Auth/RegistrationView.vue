@@ -24,11 +24,8 @@
                     ref="cpf"
                     dark
                     v-mask="'###.###.###-##'"
-                    :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório', validarCPF]"
+                    :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório', ValidateCpf]"
                   />
-                </v-col>
-                <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
-                  <v-text-field outlined dense v-model="form.age" type="number" placeholder="Idade" ref="age" dark />
                 </v-col>
                 <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                   <v-text-field outlined dense v-model="form.birthdate" v-mask="'##/##/####'" placeholder="Data Nascimento" ref="birthdate" dark />
@@ -93,7 +90,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default ({
   name: 'RegistrationView',
@@ -105,11 +102,12 @@ export default ({
       text: '',
       timeout: 2500,
       color: '',
+      noRepeatCpf: false,
+      noRepeatEmail: false,
       form: {
         name: '',
         lastName: '',
         cpf: '',
-        age: '',
         birthdate: '',
         email: '',
         password: '',
@@ -122,48 +120,96 @@ export default ({
     console.log('entrou!')
   },
 
+  computed: {
+    ...mapGetters('userAuth', ['getUsers'])
+  },
+
   methods: {
     ...mapActions('userAuth', ['actionRegistrationUser']),
+
+    validateReapeatCpf () {
+      const checkCpf = []
+      this.getUsers.forEach(element => {
+        if (element.cpf !== this.form.cpf) {
+          checkCpf.push('sim')
+        } else {
+          checkCpf.push('nao')
+        }
+      })
+
+      const validate = checkCpf.includes('nao')
+      if (!validate) {
+        this.noRepeatCpf = true
+      } else {
+        this.noRepeatCpf = false
+      }
+    },
+
+    validateReapeatEmail () {
+      const checkEmail = []
+      this.getUsers.forEach(element => {
+        if (element.email !== this.form.email) {
+          checkEmail.push('sim')
+        } else {
+          checkEmail.push('nao')
+        }
+      })
+
+      const validate = checkEmail.includes('nao')
+      if (!validate) {
+        this.noRepeatEmail = true
+      } else {
+        this.noRepeatEmail = false
+      }
+    },
+
     registrationUser () {
       if (this.form.name !== '' && this.lastName !== '') {
         if (this.form.cpf !== '') {
-          if (this.form.age !== '') {
-            if (this.form.birthdate !== '') {
-              if (this.form.email !== '') {
-                if (this.form.password !== '') {
-                  if (this.form.password === this.form.checkPassword) {
-                    this.actionRegistrationUser({
-                      dados: this.form
-                    })
-                    this.$emit('return-data-login', { button: 'registration', email: this.form.email })
-                    this.clearInputs()
-                    this.notify('Cadastro Concluido com Sucesso!', 'green')
+          if (this.form.birthdate !== '') {
+            if (this.form.email !== '') {
+              if (this.form.password !== '') {
+                if (this.form.password === this.form.checkPassword) {
+                  this.validateReapeatCpf()
+                  if (this.noRepeatCpf) {
+                    this.validateReapeatEmail()
+                    if (this.noRepeatEmail) {
+                      this.actionRegistrationUser({
+                        dados: this.form
+                      })
+                      this.$emit('return-data-login', { button: 'registration', email: this.form.email })
+                      this.clearInputs()
+                      this.notify('Cadastro Concluido com Sucesso!', 'green')
+                    } else {
+                      this.notify('E-mail já cadastrado', 'red')
+                      this.$refs.email.focus()
+                    }
                   } else {
-                    this.notify('As senhas DEVEM ser iguais')
-                    this.$refs.checkPassword.focus()
+                    this.notify('CPF já cadastrado', 'red')
+                    this.$refs.cpf.focus()
                   }
                 } else {
-                  this.notify('Senha obrigatória')
-                  this.$refs.password.focus()
+                  this.notify('As senhas DEVEM ser iguais', 'red')
+                  this.$refs.checkPassword.focus()
                 }
               } else {
-                this.notify('Email obrigatório')
-                this.$refs.email.focus()
+                this.notify('Senha obrigatória', 'red')
+                this.$refs.password.focus()
               }
             } else {
-              this.notify('Data de Nascimento obrigatório')
-              this.$refs.birthdate.focus()
+              this.notify('Email obrigatório', 'red')
+              this.$refs.email.focus()
             }
           } else {
-            this.notify('Idade obrigatória')
-            this.$refs.age.focus()
+            this.notify('Data de Nascimento obrigatório', 'red')
+            this.$refs.birthdate.focus()
           }
         } else {
-          this.notify('CPF obrigatório')
+          this.notify('CPF obrigatório', 'red')
           this.$refs.cpf.focus()
         }
       } else {
-        this.notify('Nome e Sobrenome são obrigatórios')
+        this.notify('Nome e Sobrenome são obrigatórios', 'red')
         this.$refs.name.focus()
       }
     },
@@ -182,7 +228,7 @@ export default ({
       this.form = {}
     },
 
-    validarCPF (cpf) {
+    ValidateCpf (cpf) {
       let add
       let rev
       cpf = cpf.replace(/\.|-/g, '')

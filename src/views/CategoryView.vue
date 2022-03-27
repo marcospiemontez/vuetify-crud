@@ -46,6 +46,7 @@
                               v-if="controlAddAndEditCategory === 'editCategory'"
                               outlined
                               dense
+                              ref="nameCategory"
                               v-model="dataCategory.name"
                               label="Nome da Categoria"
                             />
@@ -53,6 +54,7 @@
                               v-else
                               outlined
                               dense
+                              ref="nameCategory"
                               v-model="registrationCategory.name"
                               label="Nome da Categoria"
                             />
@@ -169,8 +171,7 @@ export default ({
     openModalAddCategory () {
       this.controlAddAndEditCategory = 'addCategory'
       this.modalAddCategories = true
-      console.log(this.controlAddAndEditCategory)
-      console.log(this.registrationCategory)
+      // this.$refs.nameCategory.focus()
     },
 
     closeModalAddCategory () {
@@ -188,6 +189,7 @@ export default ({
       setTimeout(() => {
         this.modalAddCategories = true
       }, 250)
+      // this.$refs.nameCategory.focus()
     },
 
     addCategory () {

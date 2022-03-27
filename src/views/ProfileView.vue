@@ -24,7 +24,7 @@
                   ref="cpf"
                   dark
                   v-mask="'###.###.###-##'"
-                  :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório', validarCPF]"
+                  :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório', ValidateCpf]"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
@@ -133,7 +133,7 @@ export default ({
       }
     },
 
-    validarCPF (cpf) {
+    ValidateCpf (cpf) {
       let add
       let rev
       cpf = cpf?.replace(/\.|-/g, '')
@@ -172,34 +172,29 @@ export default ({
     async updateDataUsers () {
       if (this.formProfile.name !== '' && this.formProfile.lastName !== '') {
         if (this.formProfile.cpf !== '') {
-          if (this.formProfile.age !== '') {
-            if (this.formProfile.birthdate !== '') {
-              if (this.formProfile.email !== '') {
-                if (this.formProfile.password !== '') {
-                  if (this.formProfile.password === this.formProfile.checkPassword) {
-                    await this.actionPutDataUser({
-                      dados: this.formProfile
-                    })
-                    this.notify('Cadastro Concluido com Sucesso!', 'green')
-                  } else {
-                    this.notify('As senhas DEVEM ser iguais')
-                    this.$refs.checkPassword.focus()
-                  }
+          if (this.formProfile.birthdate !== '') {
+            if (this.formProfile.email !== '') {
+              if (this.formProfile.password !== '') {
+                if (this.formProfile.password === this.formProfile.checkPassword) {
+                  await this.actionPutDataUser({
+                    dados: this.formProfile
+                  })
+                  this.notify('Cadastro Concluido com Sucesso!', 'green')
                 } else {
-                  this.notify('Senha obrigatória')
-                  this.$refs.password.focus()
+                  this.notify('As senhas DEVEM ser iguais')
+                  this.$refs.checkPassword.focus()
                 }
               } else {
-                this.notify('Email obrigatório')
-                this.$refs.email.focus()
+                this.notify('Senha obrigatória')
+                this.$refs.password.focus()
               }
             } else {
-              this.notify('Data de Nascimento obrigatório')
-              this.$refs.birthdate.focus()
+              this.notify('Email obrigatório')
+              this.$refs.email.focus()
             }
           } else {
-            this.notify('Idade obrigatória')
-            this.$refs.age.focus()
+            this.notify('Data de Nascimento obrigatório')
+            this.$refs.birthdate.focus()
           }
         } else {
           this.notify('CPF obrigatório')
