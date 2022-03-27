@@ -8,7 +8,7 @@ export function actionUserAuth (/* context */ { commit }, { dados }) {
 
 export function actionRegistrationUser (/* context */ { commit }, { dados }) {
   return new Promise((resolve, reject) => {
-    console.log(dados)
+    delete (dados.checkPassword)
     commit('SET_MUTATION_REGISTER_USERS', dados)
   })
 }
