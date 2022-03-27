@@ -21,8 +21,8 @@ export function actionPutDataUser (/* context */ { commit }, { dados }) {
   })
 }
 
-// export function actionGetUser (/* context */ { commit }, { dados, cpf }) {
-//   return new Promise((resolve, reject) => {
-//     commit('SET_MUTATION_REGISTER_USERS', dados, cpf)
-//   })
-// }
+export function actionSignOutUser (/* context */ { commit }) {
+  return new Promise((resolve, reject) => {
+    commit('SET_MUTATION_USER', {})
+  })
+}

@@ -13,14 +13,8 @@ export function actionPutProducts ({ commit }, { data, index }) {
   })
 }
 
-export function actionDeleteProducts ({ commit }, { data }) {
+export function actionDeleteProduct ({ commit }, { data }) {
   return new Promise((resolve, reject) => {
     commit('SET_MUTATION_DELETE_PRODUCT', data)
   })
 }
-// export function actionGetProducts (/* context */ { commit }, { data }) {
-//   return new Promise((resolve, reject) => {
-//     console.log(data)
-//     commit('SET_MUTATION_ADD_PRODUCTS', data)
-//   })
-// }

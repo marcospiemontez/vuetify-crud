@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="justify-center align-center">
-      <v-col cols="12" xl="8" lg="8" md="10" sm="11" xs="10">
+      <v-col cols="11">
         <v-card color="indigo lighten-1 px-5 mx-2">
           <v-card-title class="justify-center">
             <span class="text-h5 font-weight-regular white--text">Cadastro</span>

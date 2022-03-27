@@ -14,7 +14,8 @@ const routes = [
     component: () => import('../views/DashboardView.vue'),
     children: [
       { path: '/profile', name: 'profile', component: () => import('../views/ProfileView.vue') },
-      { path: '/products', name: 'products', component: () => import('../views/ProductsView.vue') }
+      { path: '/products', name: 'products', component: () => import('../views/ProductsView.vue') },
+      { path: '/category', name: 'category', component: () => import('../views/CategoryView.vue') }
     ]
   }
 ]

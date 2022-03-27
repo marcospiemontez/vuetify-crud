@@ -86,7 +86,7 @@ export default {
           this.actionUserAuth({
             dados: element
           })
-          this.$router.replace({ path: '/products' })
+          this.$router.replace({ path: '/profile' })
         } else {
           this.notify('Senha Incorreta!', 'red')
         }

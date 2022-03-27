@@ -4,6 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 
 import userAuth from './access-user'
 import products from './products'
+import categories from './categories'
 
 Vue.use(Vuex)
 
@@ -11,7 +12,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       userAuth,
-      products
+      products,
+      categories
     },
     plugins: [
       createPersistedState({
@@ -19,7 +21,8 @@ export default function (/* { ssrContext } */) {
         key: 'access-user-vuex',
         paths: [
           'userAuth',
-          'products'
+          'products',
+          'categories'
         ]
       })
     ],

@@ -1,6 +1,6 @@
 
 <template>
-  <v-app>
+  <v-app style="background-color: #272727">
     <v-navigation-drawer
       class="deep-purple accent-4"
       dark
@@ -39,7 +39,7 @@
       </v-list>
       <template>
         <div class="pa-2 mt-5">
-          <v-btn block>
+          <v-btn block @click="logout()">
             Logout
           </v-btn>
         </div>
@@ -49,7 +49,7 @@
     <v-app-bar app dark class="deep-purple accent-4">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title >Application</v-toolbar-title>
+      <v-toolbar-title >Dashboard</v-toolbar-title>
     </v-app-bar>
 
     <v-main class="px-0">
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data () {
@@ -67,13 +67,23 @@ export default {
       drawer: null,
       items: [
         { title: 'Perfil', icon: 'mdi-view-dashboard', to: '/profile' },
-        { title: 'Produtos', icon: 'mdi-image', to: '/products' }
+        { title: 'Categorias', icon: 'mdi-form-select', to: '/category' },
+        { title: 'Produtos', icon: 'mdi-food', to: '/products' }
       ]
     }
   },
 
   computed: {
     ...mapGetters('userAuth', ['getUser'])
+  },
+
+  methods: {
+    ...mapActions('userAuth', ['actionSignOutUser']),
+
+    logout () {
+      this.actionSignOutUser()
+      this.$router.push({ path: '/' })
+    }
   }
 }
 </script>

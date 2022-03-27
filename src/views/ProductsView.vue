@@ -1,11 +1,10 @@
 <template>
   <v-container>
     <v-row class="justify-center align-content-center">
-      <v-col cols="10">
+      <v-col cols="11">
         <v-data-table
           :headers="headers"
           :items="getProducts"
-          sort-by="calories"
           class="elevation-1"
         >
           <template v-slot:top>
@@ -36,7 +35,7 @@
                   </v-btn>
                 </template>
                 <v-card>
-                  <v-card-title class="text-center">
+                  <v-card-title class="d-flex justify-center">
                     <span v-if="controlAddAndEditModal === 'editProduct'" class="text-h5 font-weight-bold"> Editar Produto </span>
                     <span v-else class="text-h5 font-weight-bold"> Novo Produto </span>
                   </v-card-title>
@@ -44,6 +43,34 @@
                   <v-card-text>
                     <v-container>
                       <v-row>
+                        <v-col cols="12" class="pb-0">
+                          <v-select
+                            v-if="controlAddAndEditModal === 'editProduct'"
+                            :items="allCategories"
+                            label="Categoria do produto"
+                            v-model="dataProducts.categories"
+                            multiple
+                            clearable
+                            chips
+                            outlined
+                            dense
+                            solo
+                            flat
+                          />
+                          <v-select
+                            v-else
+                            :items="allCategories"
+                            label="Categoria do produto"
+                            v-model="registrationProduct.categories"
+                            multiple
+                            clearable
+                            chips
+                            outlined
+                            dense
+                            solo
+                            flat
+                          />
+                        </v-col>
                         <v-col
                           cols="12" xl="6" lg="6" md="6" sm="11" xs="11"
                         >
@@ -51,14 +78,14 @@
                             v-if="controlAddAndEditModal === 'editProduct'"
                             outlined
                             dense
-                            v-model="dataProducts.nameProduct"
+                            v-model="dataProducts.name"
                             label="Nome do Produto"
                           />
                           <v-text-field
                             v-else
                             outlined
                             dense
-                            v-model="registrationProduct.nameProduct"
+                            v-model="registrationProduct.name"
                             label="Nome do Produto"
                           />
                         </v-col>
@@ -67,17 +94,15 @@
                             v-if="controlAddAndEditModal === 'editProduct'"
                             outlined
                             dense
-                            v-model="dataProducts.purchaseDate"
-                            label="Data da Compra"
-                            v-mask="'##/##/####'"
+                            v-model="dataProducts.description"
+                            label="Descrição do Produto"
                           />
                           <v-text-field
                             v-else
                             outlined
                             dense
-                            v-model="registrationProduct.purchaseDate"
-                            label="Data da Compra"
-                            v-mask="'##/##/####'"
+                            v-model="registrationProduct.description"
+                            label="Descrição do Produto"
                           />
                         </v-col>
                         <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
@@ -85,17 +110,15 @@
                             v-if="controlAddAndEditModal === 'editProduct'"
                             outlined
                             dense
-                            v-model="dataProducts.dueDate"
-                            label="Data do Vencimento"
-                            v-mask="'##/##/####'"
+                            v-model="dataProducts.price"
+                            label="Preço unitário"
                           />
                           <v-text-field
                             v-else
                             outlined
                             dense
-                            v-model="registrationProduct.dueDate"
-                            label="Data do Vencimento"
-                            v-mask="'##/##/####'"
+                            v-model="registrationProduct.price"
+                            label="Preço unitário"
                           />
                         </v-col>
                         <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
@@ -103,17 +126,15 @@
                             v-if="controlAddAndEditModal === 'editProduct'"
                             outlined
                             dense
-                            type="number"
-                            v-model="dataProducts.inventory"
-                            label="Quantidade comprada"
+                            v-model="dataProducts.imgUrl"
+                            label="Insira a url da imagem do produto"
                           />
                           <v-text-field
                             v-else
                             outlined
                             dense
-                            type="number"
-                            v-model="registrationProduct.inventory"
-                            label="Quantidade comprada"
+                            v-model="registrationProduct.imgUrl"
+                            label="Insira a url da imagem do produto"
                           />
                         </v-col>
                       </v-row>
@@ -206,31 +227,42 @@ export default ({
       dialogEditProduct: false,
       controlAddAndEditModal: '',
       propsProducts: '',
+
       registrationProduct: {
-        nameProduct: '',
-        purchaseDate: '',
-        dueDate: '',
-        inventory: ''
+        name: '',
+        description: '',
+        price: 0,
+        imgUrl: '',
+        categories: []
       },
+
+      allCategories: [],
       dataProducts: {},
       indexEditProduct: '',
+
       headers: [
-        { text: 'Produto', align: 'start', sortable: false, value: 'nameProduct' },
-        { text: 'Data Compra', align: 'center', value: 'purchaseDate' },
-        { text: 'Data Vencimento', align: 'center', value: 'dueDate' },
-        { text: 'Estoque', align: 'center', value: 'inventory' },
+        { text: 'Produto', align: 'start', sortable: false, value: 'name' },
+        { text: 'Data Compra', align: 'center', value: 'description' },
+        { text: 'Data Vencimento', align: 'center', value: 'price' },
+        { text: 'Estoque', align: 'center', value: 'imgUrl' },
         { text: 'Ações', value: 'actions', align: 'center', sortable: false }
       ]
-
     }
   },
 
+  mounted () {
+    this.getCategories.forEach(element => {
+      this.allCategories.push(element.name)
+    })
+  },
+
   computed: {
-    ...mapGetters('products', ['getProducts'])
+    ...mapGetters('products', ['getProducts']),
+    ...mapGetters('categories', ['getCategories'])
   },
 
   methods: {
-    ...mapActions('products', ['actionAddProducts', 'actionDeleteProducts', 'actionPutProducts']),
+    ...mapActions('products', ['actionAddProducts', 'actionDeleteProduct', 'actionPutProducts']),
 
     openModalAddProducts () {
       this.controlAddAndEditModal = 'addProduct'
@@ -242,36 +274,40 @@ export default ({
     },
 
     addProduct () {
-      if (this.registrationProduct.nameProduct !== '') {
-        if (this.registrationProduct.purchaseDate !== '') {
-          if (this.registrationProduct.dueDate !== '') {
-            if (this.registrationProduct.inventory !== '') {
-              if (this.controlAddAndEditModal === 'editProduct') {
-                this.actionPutProducts({
-                  data: this.dataProducts
-                })
-                this.clearInputs()
-                this.closeModalAddProducts()
-                this.notify('Produto editado com sucesso!', 'green')
+      if (this.registrationProduct.categories !== '') {
+        if (this.registrationProduct.name !== '') {
+          if (this.registrationProduct.description !== '') {
+            if (this.registrationProduct.price !== '') {
+              if (this.registrationProduct.imgUrl !== '') {
+                if (this.controlAddAndEditModal === 'editProduct') {
+                  this.actionPutProducts({
+                    data: this.dataProducts
+                  })
+                  this.clearInputs()
+                  this.closeModalAddProducts()
+                  this.notify('Produto editado com sucesso!', 'green')
+                } else {
+                  this.actionAddProducts({
+                    data: this.registrationProduct
+                  })
+                  this.clearInputs()
+                  this.closeModalAddProducts()
+                  this.notify('Produto cadastrado com sucesso!', 'green')
+                }
               } else {
-                this.actionAddProducts({
-                  data: this.registrationProduct
-                })
-                this.clearInputs()
-                this.closeModalAddProducts()
-                this.notify('Produto cadastrado com sucesso!', 'green')
+                this.notify('Preencha a quantidade', 'red')
               }
             } else {
-              this.notify('Preencha a quantidade', 'red')
+              this.notify('Preencha a data de vencimento', 'red')
             }
           } else {
-            this.notify('Preencha a data de vencimento', 'red')
+            this.notify('Preencha a data da compra', 'red')
           }
         } else {
-          this.notify('Preencha a data da compra', 'red')
+          this.notify('Preencha o nome do produto', 'red')
         }
       } else {
-        this.notify('Preencha o nome do produto', 'red')
+        this.notify('Informe uma categoria para o produto', 'red')
       }
     },
 
@@ -288,11 +324,11 @@ export default ({
       if (this.propsProducts !== '') {
         let indexProduct = ''
         await this.getProducts.forEach((element, index) => {
-          if (this.propsProducts.nameProduct === element.nameProduct) {
+          if (this.propsProducts.name === element.name) {
             indexProduct = index
           }
         })
-        this.actionDeleteProducts({
+        this.actionDeleteProduct({
           data: indexProduct
         })
       }
@@ -304,7 +340,7 @@ export default ({
       this.controlAddAndEditModal = 'editProduct'
       this.dataProducts = item
       await this.getProducts.forEach(async (element, index) => {
-        if (this.dataProducts.nameProduct === element.nameProduct) {
+        if (this.dataProducts.name === element.name) {
           this.indexEditProduct = await this.$lodash.cloneDeep(index)
         }
       })
@@ -337,10 +373,11 @@ export default ({
 
     clearInputs () {
       this.registrationProduct = {
-        nameProduct: '',
-        purchaseDate: '',
-        dueDate: '',
-        inventory: ''
+        categories: '',
+        name: '',
+        description: '',
+        price: '',
+        imgUrl: ''
       }
     }
   }

@@ -10,10 +10,10 @@
             <v-form>
               <v-row>
                 <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
-                  <v-text-field outlined dense v-model="form.name" type="text" placeholder="Nome" ref="name" dark></v-text-field>
+                  <v-text-field outlined dense v-model="form.name" type="text" placeholder="Nome" ref="name" dark />
                 </v-col>
                 <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
-                  <v-text-field outlined dense v-model="form.lastName" placeholder="Sobrenome" dark></v-text-field>
+                  <v-text-field outlined dense v-model="form.lastName" placeholder="Sobrenome" dark />
                 </v-col>
                 <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                   <v-text-field
@@ -25,16 +25,16 @@
                     dark
                     v-mask="'###.###.###-##'"
                     :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório', validarCPF]"
-                  ></v-text-field>
+                  />
                 </v-col>
                 <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
-                  <v-text-field outlined dense v-model="form.age" type="number" placeholder="Idade" ref="age" dark></v-text-field>
+                  <v-text-field outlined dense v-model="form.age" type="number" placeholder="Idade" ref="age" dark />
                 </v-col>
                 <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
-                  <v-text-field outlined dense v-model="form.birthdate" v-mask="'##/##/####'" placeholder="Data Nascimento" ref="birthdate" dark></v-text-field>
+                  <v-text-field outlined dense v-model="form.birthdate" v-mask="'##/##/####'" placeholder="Data Nascimento" ref="birthdate" dark />
                 </v-col>
                 <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
-                  <v-text-field outlined dense v-model="form.email" type="email" placeholder="E-mail" ref="email" dark></v-text-field>
+                  <v-text-field outlined dense v-model="form.email" type="email" placeholder="E-mail" ref="email" dark />
                 </v-col>
                 <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                   <v-text-field
