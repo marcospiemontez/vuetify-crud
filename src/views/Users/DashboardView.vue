@@ -68,7 +68,8 @@ export default {
       items: [
         { title: 'Perfil', icon: 'mdi-view-dashboard', to: '/profile' },
         { title: 'Categorias', icon: 'mdi-form-select', to: '/category' },
-        { title: 'Produtos', icon: 'mdi-food', to: '/products' }
+        { title: 'Produtos', icon: 'mdi-food', to: '/products' },
+        { title: 'Entradas', icon: 'mdi-basket-plus-outline', to: '/entry-products' }
       ]
     }
   },

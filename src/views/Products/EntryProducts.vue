@@ -11,7 +11,7 @@
             <v-toolbar
               flat
             >
-              <v-toolbar-title>Tabela de Produtos</v-toolbar-title>
+              <v-toolbar-title>Entradas de Produtos</v-toolbar-title>
               <v-divider
                 class="mx-4"
                 inset
@@ -29,7 +29,6 @@
                     class="mb-2"
                     v-bind="attrs"
                     v-on="on"
-                    @click="openModalAddProducts()"
                   >
                     Adicionar Produto
                   </v-btn>
@@ -43,34 +42,6 @@
                   <v-card-text>
                     <v-container>
                       <v-row>
-                        <v-col cols="12" class="pb-0">
-                          <v-select
-                            v-if="controlAddAndEditModal === 'editProduct'"
-                            :items="allCategories"
-                            label="Categoria do produto"
-                            v-model="dataProducts.categories"
-                            multiple
-                            clearable
-                            chips
-                            outlined
-                            dense
-                            solo
-                            flat
-                          />
-                          <v-select
-                            v-else
-                            :items="allCategories"
-                            label="Categoria do produto"
-                            v-model="registrationProduct.categories"
-                            multiple
-                            clearable
-                            chips
-                            outlined
-                            dense
-                            solo
-                            flat
-                          />
-                        </v-col>
                         <v-col
                           cols="12" xl="6" lg="6" md="6" sm="11" xs="11"
                         >
@@ -78,38 +49,59 @@
                             v-if="controlAddAndEditModal === 'editProduct'"
                             outlined
                             dense
+                            v-model="dataProducts.code"
+                            label="Código do produto"
+                          />
+                          <v-text-field
+                            v-else
+                            outlined
+                            dense
+                            v-model="entryProducts.name"
+                            label="Código do produto"
+                          />
+                        </v-col>
+                        <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
+                          <v-text-field
+                            v-if="controlAddAndEditModal === 'editProduct'"
+                            outlined
+                            readonly
+                            dense
                             v-model="dataProducts.name"
-                            label="Nome do Produto"
+                            label="Nome do produto"
                           />
                           <v-text-field
                             v-else
                             outlined
+                            readonly
                             dense
-                            v-model="registrationProduct.name"
-                            label="Nome do Produto"
+                            v-model="entryProducts.name"
+                            label="Nome do produto"
                           />
                         </v-col>
                         <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                           <v-text-field
                             v-if="controlAddAndEditModal === 'editProduct'"
-                            outlined
                             dense
-                            v-model="dataProducts.description"
-                            label="Descrição do Produto"
+                            outlined
+                            readonly
+                            v-model="dataProducts.quantity"
+                            label="Quantidade Entrada"
                           />
                           <v-text-field
                             v-else
-                            outlined
                             dense
-                            v-model="registrationProduct.description"
-                            label="Descrição do Produto"
+                            outlined
+                            readonly
+                            v-model="entryProducts.quantity"
+                            label="Quantidade Entrada"
                           />
                         </v-col>
                         <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                           <v-text-field
                             v-if="controlAddAndEditModal === 'editProduct'"
-                            outlined
                             dense
+                            outlined
+                            readonly
                             v-model="dataProducts.price"
                             label="Preço unitário"
                           />
@@ -117,24 +109,25 @@
                             v-else
                             outlined
                             dense
-                            v-model="registrationProduct.price"
+                            v-model="entryProducts.price"
                             label="Preço unitário"
                           />
                         </v-col>
                         <v-col cols="12" xl="6" lg="6" md="6" sm="11" xs="11">
                           <v-text-field
                             v-if="controlAddAndEditModal === 'editProduct'"
-                            outlined
                             dense
-                            v-model="dataProducts.imgUrl"
-                            label="Insira a url da imagem do produto"
+                            outlined
+                            readonly
+                            v-model="dataProducts.priceTotal"
+                            label="Valor total"
                           />
                           <v-text-field
                             v-else
                             outlined
                             dense
-                            v-model="registrationProduct.imgUrl"
-                            label="Insira a url da imagem do produto"
+                            v-model="entryProducts.priceTotal"
+                            label="Valor total"
                           />
                         </v-col>
                       </v-row>
@@ -153,7 +146,7 @@
                     <v-btn
                       class="white--text"
                       color="deep-purple accent-4"
-                      @click="controlAddAndEditModal === 'editProduct' ? saveEditProduct() : addProduct()"
+                      @click="addProduct()"
                     >
                       {{ controlAddAndEditModal === 'editProduct' ? 'Salvar' : 'Adicionar' }}
                     </v-btn>
@@ -211,10 +204,8 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-
 export default ({
-  name: 'ProductsView',
+  name: 'EntryProducts',
 
   data () {
     return {
@@ -222,148 +213,45 @@ export default ({
       color: '',
       timeout: 2500,
       snackbar: false,
-      modalAddProducts: false,
-      dialogDelete: false,
-      dialogEditProduct: false,
       controlAddAndEditModal: '',
-      propsProducts: '',
 
-      registrationProduct: {
-        name: '',
-        description: '',
-        price: 0,
-        imgUrl: '',
-        categories: []
+      entryProducts: {
+        code: ''
       },
 
-      allCategories: [],
-      dataProducts: {},
-      indexEditProduct: '',
-
       headers: [
-        { text: 'Produto', align: 'start', sortable: false, value: 'name' },
-        { text: 'Data Compra', align: 'center', value: 'description' },
-        { text: 'Data Vencimento', align: 'center', value: 'price' },
-        { text: 'Estoque', align: 'center', value: 'imgUrl' },
+        { text: 'Código', align: 'start', sortable: false, value: 'code' },
+        { text: 'Produto', align: 'center', value: 'name' },
+        { text: 'Estoque', align: 'center', value: 'inventory' },
+        { text: 'Preço un.', align: 'center', value: 'price' },
+        { text: 'Total', align: 'center', value: 'total' },
         { text: 'Ações', value: 'actions', align: 'center', sortable: false }
       ]
     }
   },
 
-  mounted () {
-    this.getCategories.forEach(element => {
-      this.allCategories.push(element.name)
-    })
-  },
+  mounted () {},
 
-  computed: {
-    ...mapGetters('products', ['getProducts']),
-    ...mapGetters('categories', ['getCategories'])
-  },
+  computed: {},
 
   methods: {
-    ...mapActions('products', ['actionAddProducts', 'actionDeleteProduct', 'actionPutProducts']),
+    openModalAddProducts () {},
 
-    openModalAddProducts () {
-      this.controlAddAndEditModal = 'addProduct'
-      this.modalAddProducts = true
-    },
+    closeModalAddProducts () {},
 
-    closeModalAddProducts () {
-      this.modalAddProducts = false
-    },
+    sendFormProduct () {},
 
-    addProduct () {
-      if (this.registrationProduct.categories !== '') {
-        if (this.registrationProduct.name !== '') {
-          if (this.registrationProduct.description !== '') {
-            if (this.registrationProduct.price !== '') {
-              if (this.registrationProduct.imgUrl !== '') {
-                if (this.controlAddAndEditModal === 'editProduct') {
-                  this.actionPutProducts({
-                    data: this.dataProducts
-                  })
-                  this.clearInputs()
-                  this.closeModalAddProducts()
-                  this.notify('Produto editado com sucesso!', 'green')
-                } else {
-                  this.actionAddProducts({
-                    data: this.registrationProduct
-                  })
-                  this.clearInputs()
-                  this.closeModalAddProducts()
-                  this.notify('Produto cadastrado com sucesso!', 'green')
-                }
-              } else {
-                this.notify('Preencha a quantidade', 'red')
-              }
-            } else {
-              this.notify('Preencha a data de vencimento', 'red')
-            }
-          } else {
-            this.notify('Preencha a data da compra', 'red')
-          }
-        } else {
-          this.notify('Preencha o nome do produto', 'red')
-        }
-      } else {
-        this.notify('Informe uma categoria para o produto', 'red')
-      }
-    },
+    openModalDeleteItem (item) {},
 
-    openModalDeleteItem (item) {
-      this.propsProducts = item
-      this.dialogDelete = true
-    },
+    closeModalDeleteProduct () {},
 
-    closeModalDeleteProduct () {
-      this.dialogDelete = false
-    },
+    async deleteProductConfirm () {},
 
-    async deleteProductConfirm () {
-      if (this.propsProducts !== '') {
-        let indexProduct = ''
-        await this.getProducts.forEach((element, index) => {
-          if (this.propsProducts.name === element.name) {
-            indexProduct = index
-          }
-        })
-        this.actionDeleteProduct({
-          data: indexProduct
-        })
-      }
-      this.notify('Produto deletado com sucesso!', 'green')
-      this.closeModalDeleteProduct()
-    },
+    async openModalEditProduct (item) {},
 
-    async openModalEditProduct (item) {
-      this.controlAddAndEditModal = 'editProduct'
-      this.dataProducts = item
-      await this.getProducts.forEach(async (element, index) => {
-        if (this.dataProducts.name === element.name) {
-          this.indexEditProduct = await this.$lodash.cloneDeep(index)
-        }
-      })
-      setTimeout(() => {
-        this.modalAddProducts = true
-      }, 250)
-    },
+    saveEditProduct () {},
 
-    saveEditProduct () {
-      if (this.dataProducts !== '') {
-        this.actionPutProducts({
-          data: this.dataProducts,
-          index: this.indexEditProduct
-        })
-      }
-      this.notify('Produto Atualizado com Sucesso!', 'green')
-      this.closeModalEditProduct()
-    },
-
-    closeModalEditProduct () {
-      this.controlAddAndEditModal = ''
-      this.modalAddProducts = false
-    },
+    closeModalEditProduct () {},
 
     notify (message, color) {
       this.text = message
@@ -371,15 +259,7 @@ export default ({
       this.snackbar = true
     },
 
-    clearInputs () {
-      this.registrationProduct = {
-        categories: '',
-        name: '',
-        description: '',
-        price: '',
-        imgUrl: ''
-      }
-    }
+    clearInputs () {}
   }
 })
 </script>

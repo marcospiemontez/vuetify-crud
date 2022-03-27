@@ -7,15 +7,16 @@ const routes = [
   {
     path: '/',
     name: 'login',
-    component: () => import('../views/AuthUser.vue')
+    component: () => import('../views/Users/AuthUser.vue')
   },
   {
     path: '/dashboard',
-    component: () => import('../views/DashboardView.vue'),
+    component: () => import('../views/Users/DashboardView.vue'),
     children: [
-      { path: '/profile', name: 'profile', component: () => import('../views/ProfileView.vue') },
-      { path: '/products', name: 'products', component: () => import('../views/ProductsView.vue') },
-      { path: '/category', name: 'category', component: () => import('../views/CategoryView.vue') }
+      { path: '/profile', name: 'profile', component: () => import('../views/Users/ProfileView.vue') },
+      { path: '/products', name: 'products', component: () => import('../views/Products/ProductsView.vue') },
+      { path: '/category', name: 'category', component: () => import('../views/Categories/CategoryView.vue') },
+      { path: '/entry-products', name: 'entryProducts', component: () => import('../views/Products/EntryProducts.vue') }
     ]
   }
 ]

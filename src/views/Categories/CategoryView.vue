@@ -9,7 +9,7 @@
         >
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title>Tabela de Categorias</v-toolbar-title>
+              <v-toolbar-title>Cadastro de Categorias</v-toolbar-title>
               <v-divider
                 class="mx-4"
                 inset
