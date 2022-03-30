@@ -18,7 +18,7 @@
 
       <v-divider></v-divider>
 
-      <v-list
+      <!-- <v-list
         dense
         nav
       >
@@ -36,6 +36,81 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-group
+          :value="true"
+          no-action
+          sub-group
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>Entradas</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            v-for="([title, icon], i) in admins"
+            :key="i"
+            link
+          >
+            <v-list-item-title v-text="title"></v-list-item-title>
+
+            <v-list-item-icon>
+              <v-icon v-text="icon"></v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list-group>
+
+      </v-list> -->
+
+      <v-list>
+        <v-list-item
+          v-for="item in items"
+          :key="item.title"
+          :to="item.to"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-group
+          v-for="item in itemsExpancion"
+          :key="item.title"
+          v-model="item.active"
+          :prepend-icon="item.icon"
+          no-action
+          active-class="white--text"
+        >
+
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            v-for="child in item.items"
+            :key="child.title"
+            :to="child.to"
+            :prepend-icon="child.icon"
+            link
+            active-class="white--text"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ child.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title v-text="child.title"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
       </v-list>
       <template>
         <div class="pa-2 mt-5">
@@ -65,11 +140,20 @@ export default {
   data () {
     return {
       drawer: null,
+
       items: [
         { title: 'Perfil', icon: 'mdi-view-dashboard', to: '/profile' },
-        { title: 'Categorias', icon: 'mdi-form-select', to: '/category' },
-        { title: 'Produtos', icon: 'mdi-food', to: '/products' },
-        { title: 'Entradas', icon: 'mdi-basket-plus-outline', to: '/entry-products' }
+        { title: 'Categorias', icon: 'mdi-form-select', to: '/category' }
+      ],
+      itemsExpancion: [
+        {
+          title: 'Produtos',
+          icon: 'mdi-food',
+          items: [
+            { title: 'Cadastro', active: true, icon: 'mdi-basket-plus-outline', to: '/registration-products' },
+            { title: 'Entradas', active: true, icon: 'mdi-cart-plus', to: '/entry-products' }
+          ]
+        }
       ]
     }
   },

@@ -12,7 +12,7 @@
 
 <script>
 import LoginView from '../../components/Auth/LoginView.vue'
-import RegistrationView from '../../components/Auth/RegistrationView.vue'
+import RegistrationView from '../../components/Auth/RegistrationUser.vue'
 
 export default {
   components: { LoginView, RegistrationView },

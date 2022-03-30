@@ -93,7 +93,7 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default ({
-  name: 'RegistrationView',
+  name: 'RegistrationUser',
   data () {
     return {
       show1: false,
@@ -114,10 +114,6 @@ export default ({
         checkPassword: ''
       }
     }
-  },
-
-  mounted () {
-    console.log('entrou!')
   },
 
   computed: {
