@@ -24,7 +24,7 @@
               >
                 <template v-slot:activator= {on,attrs}>
                   <v-btn
-                    color="deep-purple accent-4"
+                    color="deep-purple accent-3"
                     dark
                     class="mb-2"
                     v-bind="attrs"
@@ -137,7 +137,7 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
-                      color="deep-purple accent-4"
+                      color="deep-purple accent-3"
                       text
                       @click="closeModalAddProducts()"
                     >
@@ -145,7 +145,7 @@
                     </v-btn>
                     <v-btn
                       class="white--text"
-                      color="deep-purple accent-4"
+                      color="deep-purple accent-3"
                       @click="addProduct()"
                     >
                       {{ controlAddAndEditModal === 'editProduct' ? 'Salvar' : 'Adicionar' }}

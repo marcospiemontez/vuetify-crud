@@ -69,7 +69,7 @@
               <v-spacer />
               <v-btn dark text @click="backLogin()" >Voltar</v-btn>
               <v-spacer />
-              <v-btn class="white--text" color="deep-purple accent-4" @click="registrationUser()" >Cadastrar</v-btn>
+              <v-btn class="white--text" color="deep-purple accent-3" @click="registrationUser()" >Cadastrar</v-btn>
               <v-spacer />
             </v-row>
           </v-card>
