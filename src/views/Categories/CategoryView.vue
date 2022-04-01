@@ -22,7 +22,7 @@
               >
                 <template v-slot:activator= {on,attrs}>
                   <v-btn
-                    color="deep-purple accent-3"
+                    color="indigo darken-1"
                     dark
                     class="mb-2"
                     v-bind="attrs"
@@ -66,7 +66,7 @@
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <v-btn
-                        color="deep-purple accent-3"
+                        color="indigo darken-1"
                         text
                         @click="closeModalAddCategory()"
                       >
@@ -74,7 +74,7 @@
                       </v-btn>
                       <v-btn
                         class="white--text"
-                        color="deep-purple accent-3"
+                        color="indigo darken-1"
                         @click="controlAddAndEditCategory === 'editCategory' ? saveEditCategory() : addCategory()"
                       >
                         {{ controlAddAndEditCategory === 'editCategory' ? 'Salvar' : 'Adicionar' }}

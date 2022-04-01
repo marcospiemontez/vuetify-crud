@@ -74,7 +74,7 @@
             <v-spacer />
             <v-btn dark text @click="permissionEditInputs()" >Editar</v-btn>
             <v-spacer />
-            <v-btn class="white--text" color="deep-purple accent-3" @click="updateDataUsers()" >Salvar</v-btn>
+            <v-btn class="white--text" color="indigo darken-1" @click="updateDataUsers()" >Salvar</v-btn>
             <v-spacer />
           </v-row>
         </v-card>
@@ -115,6 +115,7 @@ export default ({
 
   async mounted () {
     this.formProfile = await this.$lodash.cloneDeep(this.getUser)
+    console.log('aaaaaaaaaa', this.getUser)
   },
 
   computed: {

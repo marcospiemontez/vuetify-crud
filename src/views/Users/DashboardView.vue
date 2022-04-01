@@ -2,7 +2,7 @@
 <template>
   <v-app style="background-color: #272727">
     <v-navigation-drawer
-      class="deep-purple accent-3"
+      class="indigo darken-1"
       dark
       v-model="drawer" app>
       <v-list-item>
@@ -121,7 +121,7 @@
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar app dark class="deep-purple accent-3">
+    <v-app-bar app dark class="indigo darken-1">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title >Dashboard</v-toolbar-title>

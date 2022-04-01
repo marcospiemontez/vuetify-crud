@@ -59,7 +59,7 @@
             </v-row>
           </v-card-text>
           <v-card-actions class="d-flex justify-end">
-            <v-btn @click="sendFormProduct()" color="deep-purple accent-3">
+            <v-btn @click="sendFormProduct()" color="indigo darken-1">
               <span class="d-flex white--text">Adicionar</span>
             </v-btn>
           </v-card-actions>

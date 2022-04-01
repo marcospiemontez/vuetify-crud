@@ -6,8 +6,10 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import VMask from 'v-mask'
 import _ from 'lodash'
+import axios from 'axios'
 
-Vue.use(VMask)
+Vue.use(VMask, axios)
+
 Vue.prototype.$lodash = _
 
 Vue.config.productionTip = false
